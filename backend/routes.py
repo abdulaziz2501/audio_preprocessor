@@ -9,9 +9,9 @@ import logging
 from typing import Optional, List
 import json
 
-from services.noise_reducer import NoiseReducer
-from services.segmentation import AudioSegmenter
-from services.silence_remover import SilenceRemover
+from noise_reducer import NoiseReducer
+from segmentation import AudioSegmenter
+from silence_remover import SilenceRemover
 from utils.audio_utils import save_upload_file, generate_unique_filename
 
 logger = logging.getLogger(__name__)

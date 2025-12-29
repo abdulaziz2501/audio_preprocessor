@@ -15,7 +15,7 @@ from typing import Optional
 import logging
 
 # Local imports
-from api.routes import router
+from routes import router
 from utils.audio_utils import create_directories
 
 # Logging sozlamalari
