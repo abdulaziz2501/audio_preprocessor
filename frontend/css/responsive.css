@@ -1,0 +1,461 @@
+/* ========================================
+   AudioAI - Responsive Stylesheet
+   Mobile va tablet uchun moslashuv
+   ======================================== */
+
+/* ============= TABLET (768px va pastda) ============= */
+@media (max-width: 768px) {
+    :root {
+        --spacing-xl: 2rem;
+        --spacing-2xl: 3rem;
+    }
+    
+    /* Navigation */
+    .nav-menu {
+        gap: var(--spacing-md);
+    }
+    
+    .nav-menu a {
+        font-size: 0.875rem;
+    }
+    
+    /* Hero Section */
+    .hero .container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.125rem;
+    }
+    
+    .audio-wave-animation {
+        height: 200px;
+        padding: var(--spacing-lg);
+    }
+    
+    .wave {
+        width: 6px;
+    }
+    
+    /* Section Headers */
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+    
+    /* Upload Area */
+    .upload-area {
+        padding: var(--spacing-xl);
+    }
+    
+    .upload-content i {
+        font-size: 3rem;
+    }
+    
+    .upload-content h3 {
+        font-size: 1.25rem;
+    }
+    
+    /* Options Grid */
+    .options-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .option-card {
+        padding: var(--spacing-md);
+    }
+    
+    .option-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    /* Features Grid */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    /* Buttons */
+    .btn-large {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: 1rem;
+    }
+}
+
+/* ============= MOBILE (480px va pastda) ============= */
+@media (max-width: 480px) {
+    :root {
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-2xl: 2.5rem;
+    }
+    
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    /* Navigation */
+    .navbar {
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .nav-brand {
+        font-size: 1.25rem;
+    }
+    
+    .nav-brand i {
+        font-size: 1.5rem;
+    }
+    
+    .nav-menu {
+        gap: var(--spacing-sm);
+    }
+    
+    /* Hero */
+    .hero {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.3;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .audio-wave-animation {
+        height: 150px;
+        padding: var(--spacing-md);
+    }
+    
+    .wave {
+        width: 4px;
+        gap: 4px;
+    }
+    
+    .wave:nth-child(1) { height: 40px; }
+    .wave:nth-child(2) { height: 70px; }
+    .wave:nth-child(3) { height: 100px; }
+    .wave:nth-child(4) { height: 70px; }
+    .wave:nth-child(5) { height: 40px; }
+    
+    /* Sections */
+    .upload-section,
+    .processing-section,
+    .status-section,
+    .results-section,
+    .features {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .section-header {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .section-header h2 {
+        font-size: 1.75rem;
+    }
+    
+    .section-header p {
+        font-size: 0.9375rem;
+    }
+    
+    /* Upload Area */
+    .upload-area {
+        padding: var(--spacing-lg);
+    }
+    
+    .upload-content i {
+        font-size: 2.5rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .upload-content h3 {
+        font-size: 1.125rem;
+    }
+    
+    .upload-content p {
+        font-size: 0.875rem;
+    }
+    
+    .file-formats {
+        font-size: 0.75rem;
+    }
+    
+    /* File Info */
+    .file-details {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+    }
+    
+    .file-details i {
+        font-size: 1.5rem;
+    }
+    
+    .file-details button {
+        margin-left: 0;
+        margin-top: var(--spacing-sm);
+        align-self: center;
+    }
+    
+    /* Option Cards */
+    .option-card {
+        padding: var(--spacing-md);
+    }
+    
+    .option-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .option-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.125rem;
+    }
+    
+    .option-card h3 {
+        font-size: 1.125rem;
+    }
+    
+    .option-card p {
+        font-size: 0.875rem;
+    }
+    
+    /* Toggle Switch (mobile'da kichikroq) */
+    .switch {
+        width: 50px;
+        height: 28px;
+    }
+    
+    .slider:before {
+        height: 22px;
+        width: 22px;
+        left: 3px;
+        bottom: 3px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+    
+    /* Settings */
+    .setting-item label {
+        font-size: 0.875rem;
+    }
+    
+    .range-labels {
+        font-size: 0.6875rem;
+    }
+    
+    /* Status Card */
+    .status-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .status-icon {
+        font-size: 3rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .status-card h3 {
+        font-size: 1.25rem;
+    }
+    
+    .status-card p {
+        font-size: 0.875rem;
+    }
+    
+    /* Results */
+    .result-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+    
+    .result-info {
+        width: 100%;
+    }
+    
+    .result-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .result-details h4 {
+        font-size: 1rem;
+    }
+    
+    .result-details p {
+        font-size: 0.8125rem;
+    }
+    
+    /* Features */
+    .feature-card {
+        padding: var(--spacing-md);
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .feature-card h3 {
+        font-size: 1.125rem;
+    }
+    
+    .feature-card p {
+        font-size: 0.875rem;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .footer-brand {
+        font-size: 1.25rem;
+    }
+    
+    .footer p {
+        font-size: 0.875rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        font-size: 0.875rem;
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+    
+    .btn-large {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9375rem;
+    }
+}
+
+/* ============= KICHIK MOBILE (360px va pastda) ============= */
+@media (max-width: 360px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .audio-wave-animation {
+        height: 120px;
+    }
+    
+    .wave:nth-child(3) {
+        height: 80px;
+    }
+    
+    .btn-large {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ============= LANDSCAPE MODE (mobile landscape) ============= */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .hero .container {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .audio-wave-animation {
+        height: 150px;
+    }
+    
+    .upload-section,
+    .processing-section {
+        padding: var(--spacing-lg) 0;
+    }
+}
+
+/* ============= TOUCH DEVICE OPTIMIZATIONS ============= */
+@media (hover: none) and (pointer: coarse) {
+    /* Tugmalar va linklar uchun kattaroq hit area */
+    .btn,
+    .nav-menu a,
+    .btn-icon {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Hover effektlarni disable qilish */
+    .upload-area:hover,
+    .option-card:hover,
+    .btn-primary:hover,
+    .nav-menu a:hover {
+        transform: none;
+    }
+    
+    /* Active holatlarni yaxshilash */
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    .upload-area:active {
+        transform: scale(0.99);
+    }
+}
+
+/* ============= PRINT STYLES ============= */
+@media print {
+    .navbar,
+    .hero,
+    .upload-section,
+    .processing-section,
+    .footer {
+        display: none;
+    }
+    
+    .results-section {
+        padding: 0;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+}

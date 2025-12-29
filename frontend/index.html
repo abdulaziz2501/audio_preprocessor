@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioAI - Professional Audio Preprocessing</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-wave-square"></i>
+                <span>AudioAI</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Audio Preprocessing Made <span class="gradient-text">Simple</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Professional audio tools to clean noise, remove silence, and segment your audio files with AI-powered technology
+                </p>
+                <button class="btn btn-primary btn-large" onclick="scrollToUpload()">
+                    <i class="fas fa-rocket"></i> Get Started Free
+                </button>
+            </div>
+            <div class="hero-image">
+                <div class="audio-wave-animation">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Upload Section -->
+    <section class="upload-section" id="upload">
+        <div class="container">
+            <div class="section-header">
+                <h2>Upload Your Audio</h2>
+                <p>Drag and drop or click to select your audio file</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drop your audio file here</h3>
+                    <p>or click to browse</p>
+                    <p class="file-formats">Supported: MP3, WAV, M4A, OGG, FLAC</p>
+                    <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac" hidden>
+                </div>
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Uploading...</p>
+                </div>
+            </div>
+
+            <!-- File Info -->
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-details">
+                    <i class="fas fa-file-audio"></i>
+                    <div>
+                        <h4 id="fileName">audio.mp3</h4>
+                        <p id="fileSize">0 MB</p>
+                    </div>
+                    <button class="btn-icon" onclick="removeFile()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processing Options -->
+    <section class="processing-section" id="processingSection" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Select Processing Options</h2>
+                <p>Choose what you want to do with your audio</p>
+            </div>
+
+            <div class="options-grid">
+                <!-- Noise Reduction -->
+                <div class="option-card" data-option="noise">
+                    <div class="option-header">
+                        <div class="option-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <div class="option-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="noiseToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>Noise Reduction</h3>
+                    <p>Remove background noise and clean your audio</p>
+                    
+                    <!-- Settings -->
+                    <div class="option-settings" id="noiseSettings" style="display: none;">
+                        <div class="setting-item">
+                            <label>Strength: <span id="noiseStrengthValue">0.8</span></label>
+                            <input type="range" id="noiseStrength" min="0" max="1" step="0.1" value="0.8">
+                            <div class="range-labels">
+                                <span>Low</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Silence Removal -->
+                <div class="option-card" data-option="silence">
+                    <div class="option-header">
+                        <div class="option-icon">
+                            <i class="fas fa-volume-mute"></i>
+                        </div>
+                        <div class="option-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="silenceToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>Remove Silence</h3>
+                    <p>Detect and remove silent parts from your audio</p>
+                    
+                    <!-- Settings -->
+                    <div class="option-settings" id="silenceSettings" style="display: none;">
+                        <div class="setting-item">
+                            <label>Threshold: <span id="silenceThresholdValue">-40</span> dB</label>
+                            <input type="range" id="silenceThreshold" min="-60" max="-20" step="5" value="-40">
+                            <div class="range-labels">
+                                <span>More Sensitive</span>
+                                <span>Less Sensitive</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Min Duration: <span id="silenceDurationValue">500</span> ms</label>
+                            <input type="range" id="silenceDuration" min="100" max="2000" step="100" value="500">
+                            <div class="range-labels">
+                                <span>100ms</span>
+                                <span>2000ms</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segmentation -->
+                <div class="option-card" data-option="segment">
+                    <div class="option-header">
+                        <div class="option-icon">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <div class="option-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="segmentToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>Audio Segmentation</h3>
+                    <p>Split audio into smaller segments</p>
+                    
+                    <!-- Settings -->
+                    <div class="option-settings" id="segmentSettings" style="display: none;">
+                        <div class="setting-item">
+                            <label>Segment Duration: <span id="segmentDurationValue">30</span> seconds</label>
+                            <input type="range" id="segmentDuration" min="5" max="120" step="5" value="30">
+                            <div class="range-labels">
+                                <span>5s</span>
+                                <span>120s</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>Overlap: <span id="segmentOverlapValue">0</span> seconds</label>
+                            <input type="range" id="segmentOverlap" min="0" max="10" step="1" value="0">
+                            <div class="range-labels">
+                                <span>0s</span>
+                                <span>10s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Button -->
+            <div class="process-actions">
+                <button class="btn btn-primary btn-large" onclick="processAudio()">
+                    <i class="fas fa-play"></i> Start Processing
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processing Status -->
+    <section class="status-section" id="statusSection" style="display: none;">
+        <div class="container">
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3 id="statusTitle">Processing Your Audio...</h3>
+                <p id="statusMessage">Please wait while we process your audio file</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="statusProgressFill"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Processing Complete!</h2>
+                <p>Your audio has been successfully processed</p>
+            </div>
+
+            <div class="results-grid" id="resultsGrid">
+                <!-- Results will be dynamically added here -->
+            </div>
+
+            <div class="results-actions">
+                <button class="btn btn-secondary" onclick="resetApp()">
+                    <i class="fas fa-redo"></i> Process Another File
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Powerful Features</h2>
+                <p>Everything you need for audio preprocessing</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Fast Processing</h3>
+                    <p>Lightning-fast audio processing powered by advanced algorithms</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Your files are processed securely and deleted after 24 hours</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Full Control</h3>
+                    <p>Adjust every parameter to get exactly the results you want</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Easy Export</h3>
+                    <p>Download your processed audio in high-quality formats</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-wave-square"></i>
+                    <span>AudioAI</span>
+                </div>
+                <p>&copy; 2024 AudioAI. Professional Audio Preprocessing Platform.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/ui-controller.js"></script>
+    <script src="js/audio-handler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
