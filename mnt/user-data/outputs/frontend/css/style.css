@@ -242,6 +242,11 @@ body {
     font-size: 1.125rem;
 }
 
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+}
+
 .btn-icon {
     background: transparent;
     border: none;
@@ -350,7 +355,7 @@ body {
     font-weight: 500;
 }
 
-/* File Info */
+/* ============= FILE INFO & LIST ============= */
 .file-info {
     margin-top: var(--spacing-lg);
     background: var(--surface);
@@ -358,29 +363,77 @@ body {
     padding: var(--spacing-md);
 }
 
-.file-details {
+.file-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--surface-light);
+}
+
+.file-list-header h3 {
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.file-item {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+    background: var(--surface-light);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
 }
 
-.file-details i {
-    font-size: 2rem;
+.file-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.file-item i {
+    font-size: 1.5rem;
     color: var(--primary-color);
 }
 
-.file-details h4 {
-    font-size: 1.125rem;
+.file-item-info {
+    flex: 1;
+}
+
+.file-item-info h4 {
+    font-size: 0.9375rem;
     margin-bottom: 0.25rem;
 }
 
-.file-details p {
+.file-item-info p {
     color: var(--text-muted);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
 }
 
-.file-details button {
-    margin-left: auto;
+.file-item-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: var(--success);
+}
+
+.file-item-status.uploading {
+    color: var(--warning);
+}
+
+.file-item-status.error {
+    color: var(--error);
 }
 
 /* ============= PROCESSING OPTIONS ============= */

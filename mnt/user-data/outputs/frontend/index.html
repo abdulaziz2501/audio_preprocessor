@@ -6,7 +6,6 @@
     <title>AudioAI - Professional Audio Preprocessing</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -55,18 +54,19 @@
     <section class="upload-section" id="upload">
         <div class="container">
             <div class="section-header">
-                <h2>Upload Your Audio</h2>
-                <p>Drag and drop or click to select your audio file</p>
+                <h2>Upload Your Audio Files</h2>
+                <p>Drag and drop or click to select your audio files</p>
             </div>
 
             <!-- Upload Area -->
             <div class="upload-area" id="uploadArea">
                 <div class="upload-content">
                     <i class="fas fa-cloud-upload-alt"></i>
-                    <h3>Drop your audio file here</h3>
+                    <h3>Drop your audio files here</h3>
                     <p>or click to browse</p>
                     <p class="file-formats">Supported: MP3, WAV, M4A, OGG, FLAC</p>
-                    <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac" hidden>
+                    <p class="file-formats" style="color: var(--primary-color); font-weight: 600; margin-top: 8px;">✨ Multiple files supported!</p>
+                    <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac" multiple hidden>
                 </div>
                 <div class="upload-progress" id="uploadProgress" style="display: none;">
                     <div class="progress-bar">
@@ -78,15 +78,14 @@
 
             <!-- File Info -->
             <div class="file-info" id="fileInfo" style="display: none;">
-                <div class="file-details">
-                    <i class="fas fa-file-audio"></i>
-                    <div>
-                        <h4 id="fileName">audio.mp3</h4>
-                        <p id="fileSize">0 MB</p>
-                    </div>
-                    <button class="btn-icon" onclick="removeFile()">
-                        <i class="fas fa-times"></i>
+                <div class="file-list-header">
+                    <h3><i class="fas fa-list"></i> Uploaded Files (<span id="fileCount">0</span>)</h3>
+                    <button class="btn-secondary btn-sm" onclick="removeAllFiles()">
+                        <i class="fas fa-trash"></i> Clear All
                     </button>
+                </div>
+                <div class="file-list" id="fileList">
+                    <!-- Files will be added here dynamically -->
                 </div>
             </div>
         </div>
@@ -116,7 +115,7 @@
                     </div>
                     <h3>Noise Reduction</h3>
                     <p>Remove background noise and clean your audio</p>
-                    
+
                     <!-- Settings -->
                     <div class="option-settings" id="noiseSettings" style="display: none;">
                         <div class="setting-item">
@@ -145,7 +144,7 @@
                     </div>
                     <h3>Remove Silence</h3>
                     <p>Detect and remove silent parts from your audio</p>
-                    
+
                     <!-- Settings -->
                     <div class="option-settings" id="silenceSettings" style="display: none;">
                         <div class="setting-item">
@@ -182,7 +181,7 @@
                     </div>
                     <h3>Audio Segmentation</h3>
                     <p>Split audio into smaller segments</p>
-                    
+
                     <!-- Settings -->
                     <div class="option-settings" id="segmentSettings" style="display: none;">
                         <div class="setting-item">
@@ -222,7 +221,7 @@
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
                 <h3 id="statusTitle">Processing Your Audio...</h3>
-                <p id="statusMessage">Please wait while we process your audio file</p>
+                <p id="statusMessage">Please wait while we process your audio files</p>
                 <div class="progress-bar">
                     <div class="progress-fill" id="statusProgressFill"></div>
                 </div>
