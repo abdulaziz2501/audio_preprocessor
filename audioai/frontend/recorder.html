@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AudioAI - Audio yozib olish va processing">
+    <title>Yozib olish - AudioAI</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+    
+    <style>
+        /* Recorder Page Specific Styles */
+        .recorder-page {
+            min-height: 100vh;
+            padding-top: 100px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .recorder-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-3xl);
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+        }
+        
+        .recorder-header {
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .recorder-header h1 {
+            font-size: 2rem;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .recorder-header p {
+            color: var(--gray-500);
+            margin: 0 auto;
+        }
+        
+        /* Recording Status */
+        .recording-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+        
+        .recording-status.active {
+            color: var(--accent-coral);
+        }
+        
+        .recording-status .status-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--gray-400);
+            border-radius: 50%;
+        }
+        
+        .recording-status.active .status-dot {
+            background: var(--accent-coral);
+            animation: pulse 1s infinite;
+        }
+        
+        /* Timer */
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-variant-numeric: tabular-nums;
+            color: var(--gray-800);
+            margin: var(--space-lg) 0;
+            transition: color var(--transition-base);
+        }
+        
+        .timer-display.recording {
+            color: var(--accent-coral);
+        }
+        
+        /* Waveform Visualization */
+        .waveform-visualizer {
+            height: 100px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin: var(--space-xl) 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            overflow: hidden;
+            padding: 0 var(--space-lg);
+        }
+        
+        .waveform-visualizer .bar {
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-full);
+            transition: height 0.05s ease;
+        }
+        
+        .waveform-visualizer.active .bar {
+            animation: waveAnimation 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes waveAnimation {
+            0%, 100% { height: 20px; }
+            50% { height: var(--wave-height, 60px); }
+        }
+        
+        /* Record Button */
+        .record-button-container {
+            margin: var(--space-xl) 0;
+        }
+        
+        .record-button {
+            width: 140px;
+            height: 140px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-coral), var(--accent-pink));
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        }
+        
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.5);
+        }
+        
+        .record-button:active {
+            transform: scale(0.98);
+        }
+        
+        .record-button.recording {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: pulseRecord 1.5s infinite;
+        }
+        
+        .record-button.recording::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 3px solid rgba(239, 68, 68, 0.5);
+            border-radius: 50%;
+            animation: rippleOut 1.5s infinite;
+        }
+        
+        @keyframes pulseRecord {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        
+        @keyframes rippleOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+        
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            margin-top: var(--space-xl);
+        }
+        
+        .control-btn {
+            padding: var(--space-md) var(--space-xl);
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .control-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .control-btn.primary {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+            border: none;
+        }
+        
+        .control-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            margin-top: var(--space-2xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .preview-section.visible {
+            display: block;
+        }
+        
+        .audio-preview {
+            margin: var(--space-lg) 0;
+        }
+        
+        .audio-preview audio {
+            width: 100%;
+            border-radius: var(--radius-md);
+        }
+        
+        /* Instructions */
+        .instructions {
+            margin-top: var(--space-xl);
+            padding: var(--space-lg);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            text-align: left;
+        }
+        
+        .instructions h4 {
+            font-size: 0.95rem;
+            margin-bottom: var(--space-sm);
+            color: var(--gray-700);
+        }
+        
+        .instructions ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .instructions li {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            padding: var(--space-xs) 0;
+        }
+        
+        .instructions li i {
+            color: var(--primary);
+            width: 20px;
+        }
+        
+        /* Transcription Section */
+        .transcription-section {
+            margin-top: var(--space-lg);
+            text-align: left;
+        }
+        
+        .transcription-label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .transcription-label i {
+            color: var(--primary);
+        }
+        
+        .optional-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: var(--gray-200);
+            color: var(--gray-500);
+            border-radius: var(--radius-full);
+            font-weight: 400;
+        }
+        
+        .optional-badge.required {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--accent-coral);
+        }
+        
+        .transcription-input {
+            width: 100%;
+            padding: var(--space-md);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: var(--transition-base);
+        }
+        
+        .transcription-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .transcription-input.error {
+            border-color: var(--accent-coral);
+        }
+        
+        .transcription-hint {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .transcription-hint i {
+            color: var(--primary-light);
+        }
+        
+        /* Permission Modal */
+        .permission-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .permission-modal.visible {
+            display: flex;
+        }
+        
+        .permission-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            max-width: 400px;
+            text-align: center;
+            animation: fadeInUp 0.3s ease-out;
+        }
+        
+        .permission-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent-coral);
+            margin: 0 auto var(--space-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== Navigation ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <span>Audio<span class="text-gradient">AI</span></span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Bosh sahifa</a></li>
+                <li><a href="recorder.html" class="active">Yozib olish</a></li>
+                <li><a href="editor.html">Tahrirlash</a></li>
+            </ul>
+            
+            <a href="editor.html" class="btn btn-primary">
+                <i class="fas fa-upload"></i>
+                Yuklash
+            </a>
+        </div>
+    </nav>
+
+    <!-- ========== Recorder Page ========== -->
+    <main class="recorder-page">
+        <div class="container">
+            <div class="recorder-card">
+                <!-- Header -->
+                <div class="recorder-header">
+                    <h1>🎙️ Audio Yozib Olish</h1>
+                    <p>Mikrofon orqali ovozingizni yozib oling va avtomatik processing qiling</p>
+                </div>
+                
+                <!-- Recording Status -->
+                <div class="recording-status" id="recordingStatus">
+                    <span class="status-dot"></span>
+                    <span id="statusText">Tayyor</span>
+                </div>
+                
+                <!-- Timer -->
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                
+                <!-- Waveform Visualization -->
+                <div class="waveform-visualizer" id="waveform">
+                    <!-- Bars will be generated by JavaScript -->
+                </div>
+                
+                <!-- Record Button -->
+                <div class="record-button-container">
+                    <button class="record-button" id="recordBtn" title="Boshlash / To'xtatish">
+                        <i class="fas fa-microphone" id="recordIcon"></i>
+                    </button>
+                </div>
+                
+                <!-- Control Buttons -->
+                <div class="control-buttons" id="controlButtons">
+                    <button class="control-btn" id="resetBtn" disabled>
+                        <i class="fas fa-redo"></i>
+                        Qayta boshlash
+                    </button>
+                    <button class="control-btn primary" id="processBtn" disabled>
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        Processing
+                    </button>
+                </div>
+                
+                <!-- Preview Section -->
+                <div class="preview-section" id="previewSection">
+                    <h4>🎧 Yozilgan audio</h4>
+                    <div class="audio-preview">
+                        <audio id="audioPreview" controls></audio>
+                    </div>
+                    
+                    <!-- Transcription Input -->
+                    <div class="transcription-section">
+                        <label for="transcriptionInput" class="transcription-label">
+                            <i class="fas fa-keyboard"></i>
+                            Matn (Transcription)
+                            <span class="optional-badge" id="optionalBadge">ixtiyoriy</span>
+                        </label>
+                        <textarea 
+                            id="transcriptionInput" 
+                            class="transcription-input"
+                            placeholder="Audio matnini shu yerga yozing..."
+                            rows="3"
+                        ></textarea>
+                        <p class="transcription-hint">
+                            <i class="fas fa-info-circle"></i>
+                            STT dataset uchun audio matnini kiriting
+                        </p>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: var(--gray-500); margin-top: var(--space-md);">
+                        Audio tayyorlash sahifasiga yuborish uchun "Processing" tugmasini bosing
+                    </p>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="instructions">
+                    <h4>📋 Yo'riqnoma</h4>
+                    <ul>
+                        <li><i class="fas fa-circle-check"></i> Qizil tugmani bosib yozishni boshlang</li>
+                        <li><i class="fas fa-circle-check"></i> To'xtatish uchun yana bir marta bosing</li>
+                        <li><i class="fas fa-circle-check"></i> Audioni tinglang va processing qiling</li>
+                        <li><i class="fas fa-circle-check"></i> Processing sahifasida avtomatik tozalanadi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== Permission Modal ========== -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="permission-content">
+            <div class="permission-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <h3>Mikrofon ruxsati kerak</h3>
+            <p style="color: var(--gray-600); margin: var(--space-md) 0;">
+                Audio yozib olish uchun brauzernizda mikrofon ruxsatini bering.
+            </p>
+            <button class="btn btn-primary" onclick="requestPermission()">
+                <i class="fas fa-check"></i>
+                Ruxsat berish
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== Scripts ========== -->
+    <script src="js/recorder.js"></script>
+</body>
+</html>

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AudioAI - Audio yuklash va processing">
+    <title>Audio Tahrirlash - AudioAI</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+    
+    <style>
+        /* Editor Page Specific Styles */
+        .editor-page {
+            min-height: 100vh;
+            padding: 100px 0 var(--space-3xl);
+        }
+        
+        .editor-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .editor-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .editor-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .editor-header p {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Upload Zone */
+        .upload-section {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-card);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-xl);
+            padding: var(--space-3xl) var(--space-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+        }
+        
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.03);
+        }
+        
+        .upload-area.drag-over {
+            transform: scale(1.01);
+            border-style: solid;
+        }
+        
+        .upload-icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+        }
+        
+        .upload-icon-wrapper i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .upload-area h3 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .upload-area p {
+            color: var(--gray-500);
+            margin-bottom: var(--space-lg);
+        }
+        
+        /* File Queue Styles */
+        .file-queue {
+            margin-top: var(--space-xl);
+            padding: var(--space-xl);
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .queue-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .queue-header h4 {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 1rem;
+            color: var(--gray-700);
+            margin: 0;
+        }
+        
+        .btn-clear-all {
+            padding: var(--space-sm) var(--space-md);
+            background: none;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            color: var(--gray-600);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .btn-clear-all:hover {
+            border-color: var(--accent-coral);
+            color: var(--accent-coral);
+        }
+        
+        .queue-list {
+            max-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .queue-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition-fast);
+        }
+        
+        .queue-item:hover {
+            border-color: var(--primary-light);
+        }
+        
+        .queue-item.processing {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .queue-item.completed {
+            border-color: var(--accent-teal);
+            background: rgba(20, 184, 166, 0.05);
+        }
+        
+        .queue-item.error {
+            border-color: var(--accent-coral);
+            background: rgba(249, 115, 22, 0.05);
+        }
+        
+        .queue-item-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .queue-item.completed .queue-item-icon {
+            background: rgba(20, 184, 166, 0.1);
+            color: var(--accent-teal);
+        }
+        
+        .queue-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .queue-item-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .queue-item-meta {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .queue-item-status {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+        
+        .queue-item.processing .queue-item-status {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .queue-item.completed .queue-item-status {
+            background: var(--accent-teal);
+            color: white;
+        }
+        
+        .queue-item-actions {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .queue-item-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .queue-item-btn:hover {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        
+        .queue-item-btn.download {
+            background: var(--accent-teal);
+            color: white;
+        }
+        
+        .queue-item-btn.download:hover {
+            background: #0d9488;
+        }
+        
+        .queue-actions {
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+        }
+        
+        /* Batch Progress */
+        .batch-progress {
+            margin-top: var(--space-lg);
+            padding: var(--space-lg);
+            background: white;
+            border-radius: var(--radius-lg);
+        }
+        
+        .batch-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+            font-size: 0.9rem;
+        }
+        
+        .batch-progress-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .batch-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+        
+        /* Option items in queue */
+        .options-grid .option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-sm) var(--space-md);
+            background: white;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .options-grid .option-label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.85rem;
+        }
+        
+        .options-grid .option-label i {
+            color: var(--primary);
+            width: 16px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            transition: var(--transition-base);
+        }
+        
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition-base);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+        
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-xl);
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        
+        .format-badges {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .format-badge {
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+        }
+        
+        /* Hidden file input */
+        #fileInput {
+            display: none;
+        }
+        
+        /* Processing Section */
+        .processing-section {
+            display: none;
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-card);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .processing-section.visible {
+            display: block;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        /* File Info */
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .file-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-details h4 {
+            margin-bottom: 4px;
+            font-size: 1rem;
+            word-break: break-all;
+        }
+        
+        .file-details span {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+        
+        .file-remove {
+            padding: var(--space-sm);
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .file-remove:hover {
+            color: var(--accent-coral);
+        }
+        
+        /* Progress */
+        .progress-section {
+            margin: var(--space-xl) 0;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .progress-label {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .progress-percent {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .progress-bar-wrapper {
+            height: 10px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+            border-radius: var(--radius-full);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .progress-status {
+            margin-top: var(--space-sm);
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .results-section.visible {
+            display: block;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .results-header .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(34, 197, 94, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+            font-size: 2rem;
+            color: var(--accent-teal);
+        }
+        
+        .results-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-sm);
+        }
+        
+        /* Stats Grid */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .stat-box {
+            padding: var(--space-lg);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        
+        .stat-box .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .stat-box .label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: var(--space-xs);
+        }
+        
+        .stat-box.highlight {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+        }
+        
+        .stat-box.highlight .value {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Audio Players */
+        .audio-comparison {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .audio-compare-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .compare-tab {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--gray-100);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-base);
+            color: var(--gray-600);
+        }
+        
+        .compare-tab.active {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+        }
+        
+        .audio-player-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+        }
+        
+        .audio-player-card audio {
+            width: 100%;
+        }
+        
+        .audio-player-label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .audio-player-label i {
+            color: var(--primary);
+        }
+        
+        /* Download Button */
+        .download-section {
+            text-align: center;
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-lg) var(--space-2xl);
+            background: linear-gradient(135deg, var(--accent-teal), #22c55e);
+            color: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-base);
+            box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(20, 184, 166, 0.5);
+        }
+        
+        .download-info {
+            margin-top: var(--space-md);
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
+        
+        /* New File Button */
+        .new-file-btn {
+            margin-top: var(--space-lg);
+            padding: var(--space-md) var(--space-xl);
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+        
+        .new-file-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Processing Options */
+        .options-section {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .options-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+            cursor: pointer;
+        }
+        
+        .options-header h4 {
+            font-size: 1rem;
+            color: var(--gray-700);
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: var(--space-md);
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .option-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            transition: var(--transition-base);
+        }
+        
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition-base);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+        
+        /* Process Button */
+        .process-btn {
+            width: 100%;
+            padding: var(--space-lg);
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+        
+        .process-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        
+        .process-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .process-btn .spinner {
+            display: none;
+        }
+        
+        .process-btn.loading .spinner {
+            display: inline-block;
+        }
+        
+        .process-btn.loading .btn-text {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== Navigation ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <span>Audio<span class="text-gradient">AI</span></span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Bosh sahifa</a></li>
+                <li><a href="recorder.html">Yozib olish</a></li>
+                <li><a href="editor.html" class="active">Tahrirlash</a></li>
+            </ul>
+            
+            <a href="recorder.html" class="btn btn-primary">
+                <i class="fas fa-microphone"></i>
+                Yozib olish
+            </a>
+        </div>
+    </nav>
+
+    <!-- ========== Editor Page ========== -->
+    <main class="editor-page">
+        <div class="container">
+            <div class="editor-container">
+                <!-- Header -->
+                <div class="editor-header">
+                    <h1>🎧 Audio Tahrirlash</h1>
+                    <p>Audio faylni yuklang, avtomatik tozalanib, yuklab olishga tayyor bo'ladi</p>
+                </div>
+                
+                <!-- Upload Section -->
+                <section class="upload-section" id="uploadSection">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept=".wav,.mp3,.ogg,.flac,.m4a" multiple>
+                        
+                        <div class="upload-icon-wrapper">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                        </div>
+                        
+                        <h3>Audio fayllarni yuklang</h3>
+                        <p>Fayllarni shu yerga tashlang yoki tanlash uchun bosing (bir nechta fayl tanlash mumkin)</p>
+                        
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-folder-open"></i>
+                            Fayllar tanlash
+                        </button>
+                        
+                        <div class="format-badges">
+                            <span class="format-badge">WAV</span>
+                            <span class="format-badge">MP3</span>
+                            <span class="format-badge">OGG</span>
+                            <span class="format-badge">FLAC</span>
+                            <span class="format-badge">M4A</span>
+                        </div>
+                    </div>
+                    
+                    <!-- File Queue (Multiple files) -->
+                    <div class="file-queue" id="fileQueue" style="display: none;">
+                        <div class="queue-header">
+                            <h4><i class="fas fa-list"></i> Yuklangan fayllar (<span id="fileCount">0</span>)</h4>
+                            <button class="btn-clear-all" id="clearAllBtn">
+                                <i class="fas fa-trash"></i> Hammasini tozalash
+                            </button>
+                        </div>
+                        <div class="queue-list" id="queueList">
+                            <!-- File items will be added here -->
+                        </div>
+                        
+                        <!-- Processing Options -->
+                        <div class="options-section" style="margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--gray-200);">
+                            <div class="options-header">
+                                <h4 style="margin: 0;"><i class="fas fa-sliders"></i> Processing sozlamalari</h4>
+                            </div>
+                            <div class="options-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-sm); margin-top: var(--space-md);">
+                                <div class="option-item">
+                                    <div class="option-label">
+                                        <i class="fas fa-volume-xmark"></i>
+                                        <span>Noise Removal</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="optDenoise" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-label">
+                                        <i class="fas fa-scissors"></i>
+                                        <span>Silence Trimming</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="optTrim" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-label">
+                                        <i class="fas fa-comments"></i>
+                                        <span>Speech Extraction</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="optExtract" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="option-item">
+                                    <div class="option-label">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Normalization</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="optNormalize" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="queue-actions">
+                            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-plus"></i>
+                                Yana qo'shish
+                            </button>
+                            <button class="btn btn-primary" id="processAllBtn">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                                Hammasini processing qilish
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Processing Section -->
+                <section class="processing-section" id="processingSection">
+                    <!-- File Info -->
+                    <div class="file-info" id="fileInfo">
+                        <div class="file-icon">
+                            <i class="fas fa-file-audio"></i>
+                        </div>
+                        <div class="file-details">
+                            <h4 id="fileName">audio_file.wav</h4>
+                            <span id="fileSize">2.4 MB</span>
+                        </div>
+                        <button class="file-remove" id="removeFile" title="Faylni olib tashlash">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Processing Options -->
+                    <div class="options-section">
+                        <div class="options-header">
+                            <h4><i class="fas fa-sliders"></i> Processing sozlamalari</h4>
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <div class="option-label">
+                                    <i class="fas fa-volume-xmark"></i>
+                                    <span>Noise Removal</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="optDenoise" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="option-item">
+                                <div class="option-label">
+                                    <i class="fas fa-scissors"></i>
+                                    <span>Silence Trimming</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="optTrim" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="option-item">
+                                <div class="option-label">
+                                    <i class="fas fa-comments"></i>
+                                    <span>Speech Extraction</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="optExtract" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="option-item">
+                                <div class="option-label">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Normalization</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="optNormalize" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Process Button -->
+                    <button class="process-btn" id="processBtn" style="margin-top: var(--space-xl);">
+                        <span class="btn-text">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Processing boshlash
+                        </span>
+                        <div class="spinner"></div>
+                    </button>
+                    
+                    <!-- Progress -->
+                    <div class="progress-section" id="progressSection" style="display: none;">
+                        <div class="progress-header">
+                            <span class="progress-label">Processing...</span>
+                            <span class="progress-percent" id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-fill" id="progressBar"></div>
+                        </div>
+                        <div class="progress-status" id="progressStatus">Tayyorlanmoqda...</div>
+                    </div>
+                </section>
+                
+                <!-- Results Section -->
+                <section class="results-section" id="resultsSection">
+                    <div class="results-header">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h2>Processing tugadi! 🎉</h2>
+                        <p style="color: var(--gray-500);">Audio fayl muvaffaqiyatli tozalandi</p>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="value" id="statOriginal">--</div>
+                            <div class="label">Original davomiylik</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="value" id="statProcessed">--</div>
+                            <div class="label">Yangi davomiylik</div>
+                        </div>
+                        <div class="stat-box highlight">
+                            <div class="value" id="statSaved">--</div>
+                            <div class="label">Qisqartirildi</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Comparison -->
+                    <div class="audio-comparison">
+                        <div class="audio-compare-header">
+                            <button class="compare-tab active" data-tab="before" onclick="switchAudioTab('before')">
+                                <i class="fas fa-backward"></i> Original
+                            </button>
+                            <button class="compare-tab" data-tab="after" onclick="switchAudioTab('after')">
+                                Processed <i class="fas fa-forward"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="audio-player-card" id="beforePlayer">
+                            <div class="audio-player-label">
+                                <i class="fas fa-file-audio"></i>
+                                <span>Original audio</span>
+                            </div>
+                            <audio id="audioOriginal" controls></audio>
+                        </div>
+                        
+                        <div class="audio-player-card" id="afterPlayer" style="display: none;">
+                            <div class="audio-player-label">
+                                <i class="fas fa-sparkles"></i>
+                                <span>Processed audio</span>
+                            </div>
+                            <audio id="audioProcessed" controls></audio>
+                        </div>
+                    </div>
+                    
+                    <!-- Download -->
+                    <div class="download-section">
+                        <button class="download-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            Yuklab olish
+                        </button>
+                        <p class="download-info" id="downloadInfo">
+                            <i class="fas fa-file-audio"></i>
+                            <span id="downloadFileName">audio_file.wav</span>
+                        </p>
+                        
+                        <button class="new-file-btn" onclick="resetEditor()">
+                            <i class="fas fa-plus"></i>
+                            Yangi fayl yuklash
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== Scripts ========== -->
+    <script src="js/editor.js"></script>
+</body>
+</html>

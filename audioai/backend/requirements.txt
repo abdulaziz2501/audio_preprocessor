@@ -1,0 +1,26 @@
+# AudioAI Backend Dependencies
+# Python 3.9+ talab qilinadi
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+
+# Audio Processing
+librosa==0.10.1
+soundfile==0.12.1
+numpy==1.26.3
+scipy==1.12.0
+
+# Pydantic (FastAPI uchun)
+pydantic==2.5.3
+
+# Async support
+aiofiles==23.2.1
+
+# Optional: Advanced denoising
+# noisereduce==3.0.0
+# webrtcvad==2.0.10
+
+# Development
+python-dotenv==1.0.0

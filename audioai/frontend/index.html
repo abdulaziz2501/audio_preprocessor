@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AudioAI - STT Dataset uchun audio preprocessing. Noise removal, silence trimming, speech extraction.">
+    <title>AudioAI - STT Audio Preprocessing</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+</head>
+<body>
+    <!-- ========== Navigation ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <span>Audio<span class="text-gradient">AI</span></span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Bosh sahifa</a></li>
+                <li><a href="recorder.html">Yozib olish</a></li>
+                <li><a href="editor.html">Tahrirlash</a></li>
+            </ul>
+            
+            <a href="editor.html" class="btn btn-primary">
+                <i class="fas fa-upload"></i>
+                Boshlash
+            </a>
+        </div>
+    </nav>
+
+    <!-- ========== Hero Section ========== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Badge -->
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    STT Dataset uchun optimallashtirilgan
+                </div>
+                
+                <!-- Main Heading -->
+                <h1>
+                    Audio fayllaringizni
+                    <span class="text-gradient">mukammal</span>
+                    tayyorlang
+                </h1>
+                
+                <!-- Subtitle -->
+                <p class="hero-subtitle">
+                    Noise removal, silence trimming va speech extraction — 
+                    barchasi bir joyda. Speech-to-Text modellar uchun
+                    professional audio preprocessing.
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="hero-buttons">
+                    <a href="recorder.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-microphone btn-icon"></i>
+                        Yozib olish
+                    </a>
+                    <a href="editor.html" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-upload btn-icon"></i>
+                        Audio yuklash
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Features Section ========== -->
+    <section class="features section" id="features">
+        <div class="container">
+            <div class="text-center mb-xl">
+                <h2>Nima qila olamiz?</h2>
+                <p style="max-width: 600px; margin: var(--space-md) auto 0;">
+                    Professional audio preprocessing bir necha soniyada.
+                    STT datasetlar uchun eng yaxshi sifat.
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1: Noise Removal -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-volume-xmark"></i>
+                    </div>
+                    <h4>Noise Removal</h4>
+                    <p>
+                        Background shovqinlarni avtomatik aniqlash va olib tashlash.
+                        Spectral gating texnologiyasi bilan toza audio.
+                    </p>
+                </div>
+                
+                <!-- Feature 2: Silence Trimming -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-scissors"></i>
+                    </div>
+                    <h4>Silence Trimming</h4>
+                    <p>
+                        Audio boshi va oxiridagi ortiqcha jimliklarni
+                        avtomatik kesib tashlash. Optimal uzunlik.
+                    </p>
+                </div>
+                
+                <!-- Feature 3: Speech Extraction -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4>Speech Extraction</h4>
+                    <p>
+                        VAD (Voice Activity Detection) yordamida faqat
+                        nutq qismlarini ajratib olish. 15s → 5s optimallashtirish.
+                    </p>
+                </div>
+                
+                <!-- Feature 4: Original Filename -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-audio"></i>
+                    </div>
+                    <h4>Original Filename</h4>
+                    <p>
+                        Fayl nomlari o'zgartirilmaydi! Dataset strukturangiz
+                        saqlanib qoladi. Batch processing uchun ideal.
+                    </p>
+                </div>
+                
+                <!-- Feature 5: Fast Processing -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Tezkor Processing</h4>
+                    <p>
+                        Optimallashtirilgan algoritm tufayli audio fayllar
+                        bir necha soniyada qayta ishlanadi.
+                    </p>
+                </div>
+                
+                <!-- Feature 6: STT Ready -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4>STT Ready Output</h4>
+                    <p>
+                        Whisper, DeepSpeech va boshqa STT modellar uchun
+                        tayyor format. 16kHz mono WAV.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== How It Works ========== -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <div class="text-center mb-xl">
+                <h2>Qanday ishlaydi?</h2>
+                <p style="max-width: 600px; margin: var(--space-md) auto 0;">
+                    Uch oddiy qadam bilan professional natija oling.
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card" style="text-align: center;">
+                    <div style="font-size: 3rem; color: var(--primary); margin-bottom: var(--space-md);">1</div>
+                    <h4>Audio yuklang</h4>
+                    <p>WAV yoki MP3 formatdagi audio faylni yuklang yoki to'g'ridan-to'g'ri yozib oling.</p>
+                </div>
+                
+                <div class="feature-card" style="text-align: center;">
+                    <div style="font-size: 3rem; color: var(--primary); margin-bottom: var(--space-md);">2</div>
+                    <h4>Avtomatik processing</h4>
+                    <p>Tizim noise, silence va speech ni avtomatik aniqlaydi va tozalaydi.</p>
+                </div>
+                
+                <div class="feature-card" style="text-align: center;">
+                    <div style="font-size: 3rem; color: var(--primary); margin-bottom: var(--space-md);">3</div>
+                    <h4>Yuklab oling</h4>
+                    <p>Tayyor audio faylni original nom bilan yuklab oling. Shunchaki!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA Section ========== -->
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color: white;">
+        <div class="container text-center">
+            <h2 style="color: white; margin-bottom: var(--space-md);">
+                Hoziroq boshlang
+            </h2>
+            <p style="color: rgba(255,255,255,0.9); max-width: 500px; margin: 0 auto var(--space-xl);">
+                STT dataset tayyorlash hech qachon bu qadar oson bo'lmagan.
+                Birinchi audiongizni hoziroq qayta ishlang!
+            </p>
+            <div class="flex justify-center gap-md" style="flex-wrap: wrap;">
+                <a href="recorder.html" class="btn btn-lg" style="background: white; color: var(--primary);">
+                    <i class="fas fa-microphone"></i>
+                    Yozib olish
+                </a>
+                <a href="editor.html" class="btn btn-lg" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">
+                    <i class="fas fa-upload"></i>
+                    Audio yuklash
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Footer ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo" style="color: white;">
+                        <div class="logo-icon">
+                            <i class="fas fa-wave-square"></i>
+                        </div>
+                        <span>AudioAI</span>
+                    </a>
+                    <p>
+                        STT Dataset uchun professional audio preprocessing.
+                        Open source va bepul.
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Sahifalar</h4>
+                    <ul>
+                        <li><a href="index.html">Bosh sahifa</a></li>
+                        <li><a href="recorder.html">Yozib olish</a></li>
+                        <li><a href="editor.html">Tahrirlash</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Texnologiyalar</h4>
+                    <ul>
+                        <li><a href="#">FastAPI</a></li>
+                        <li><a href="#">Librosa</a></li>
+                        <li><a href="#">WebRTC VAD</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Qo'llab-quvvatlash</h4>
+                    <ul>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Hujjatlar</a></li>
+                        <li><a href="#">Bog'lanish</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 AudioAI. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== Scripts ========== -->
+    <script src="js/main.js"></script>
+</body>
+</html>
