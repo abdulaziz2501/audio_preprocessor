@@ -358,16 +358,8 @@ const UIController = {
                     resultsGrid.appendChild(errorCard);
                 }
             });
-
-            resultsSection.style.display = 'block';
-            resultsSection.classList.add('fade-in');
-
-            setTimeout(() => {
-                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }, 1000);
+        });
     },
-
     /**
      * Result card yaratish
      */

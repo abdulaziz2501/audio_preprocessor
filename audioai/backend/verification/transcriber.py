@@ -47,7 +47,7 @@ class WhisperTranscriber:
         model_name: str = "base",
         device: Optional[str] = None,
         compute_type: str = "float16",
-        language: str = "auto",
+        language: str = "uz",
         download_root: Optional[str] = None
     ):
         """

@@ -775,3 +775,115 @@ input:checked + .slider:before {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ============= AUDIO PLAYER & STATISTICS ============= */
+.audio-player {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: var(--surface-light);
+    border-radius: var(--radius-sm);
+}
+
+.audio-player audio {
+    width: 100%;
+    height: 40px;
+    outline: none;
+}
+
+.audio-player audio::-webkit-media-controls-panel {
+    background: var(--surface);
+}
+
+.audio-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary-color);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-item.stat-removed .stat-value {
+    color: var(--warning);
+}
+
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* Batch Download Button */
+.batch-download-section {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    border-radius: var(--radius-lg);
+    text-align: center;
+    border: 1px solid var(--primary-color);
+}
+
+.batch-download-section h3 {
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.batch-download-section p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-download-all {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.125rem;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.btn-download-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.download-progress {
+    margin-top: var(--spacing-md);
+    display: none;
+}
+
+.download-progress.active {
+    display: block;
+}
+
+.download-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    color: var(--success);
+    font-weight: 500;
+}

@@ -99,18 +99,12 @@ class SilenceRemover:
             # Saqlash
             output_audio.export(output_path, format="wav")
             
-            logger.info(f"✅ Jimlik olib tashlandi:")
-            logger.info(f"   - Original davomiylik: {original_duration:.2f}s")
-            logger.info(f"   - Yangi davomiylik: {final_duration:.2f}s")
-            logger.info(f"   - Olib tashlangan: {removed_duration:.2f}s ({percentage_removed:.1f}%)")
-            logger.info(f"   - Saqlandi: {output_path}")
-            
-            return output_path
-            
+
+
         except Exception as e:
             logger.error(f"❌ Jimlik olib tashlashda xato: {e}")
             raise
-    
+
     def detect_silence_ranges(
         self,
         input_path: str,
@@ -119,52 +113,52 @@ class SilenceRemover:
     ) -> List[Tuple[float, float]]:
         """
         Audio'dagi jimlik joylarni aniqlash (olib tashlamasdan)
-        
+
         Args:
             input_path: Kirish audio fayl yo'li
             silence_threshold: Jimlik chegarasi (dB)
             min_silence_duration: Minimal jimlik davomiyligi (ms)
-        
+
         Returns:
             Jimlik oraliqlar ro'yxati [(start_time, end_time), ...]
         """
         try:
             logger.info(f"🔍 Jimlik joylarni aniqlash boshlandi")
-            
+
             audio = AudioSegment.from_file(input_path)
-            
+
             # Jimlik bo'lmagan joylarni topish
             nonsilent_ranges = detect_nonsilent(
                 audio,
                 min_silence_len=min_silence_duration,
                 silence_thresh=silence_threshold
             )
-            
+
             # Jimlik oraliqlarini hisoblash
             silence_ranges = []
-            
+
             # Boshlang'ich jimlik
             if nonsilent_ranges and nonsilent_ranges[0][0] > 0:
                 silence_ranges.append((0, nonsilent_ranges[0][0] / 1000.0))
-            
+
             # Oralardagi jimliklar
             for i in range(len(nonsilent_ranges) - 1):
                 silence_start = nonsilent_ranges[i][1] / 1000.0
                 silence_end = nonsilent_ranges[i + 1][0] / 1000.0
                 silence_ranges.append((silence_start, silence_end))
-            
+
             # Oxirgi jimlik
             if nonsilent_ranges and nonsilent_ranges[-1][1] < len(audio):
                 silence_ranges.append((nonsilent_ranges[-1][1] / 1000.0, len(audio) / 1000.0))
-            
+
             logger.info(f"✅ {len(silence_ranges)} ta jimlik joyi topildi")
-            
+
             return silence_ranges
-            
+
         except Exception as e:
             logger.error(f"❌ Jimlik aniqlashda xato: {e}")
             raise
-    
+
     def trim_silence_edges(
         self,
         input_path: str,
@@ -172,60 +166,60 @@ class SilenceRemover:
     ) -> str:
         """
         Audio boshi va oxiridagi jimlikni kesib tashlash
-        
+
         Args:
             input_path: Kirish audio fayl yo'li
             silence_threshold: Jimlik chegarasi (dB)
-        
+
         Returns:
             Kesilgan audio fayl yo'li
         """
         try:
             logger.info(f"✂️ Bosh va oxir jimlikni kesish boshlandi")
-            
+
             audio = AudioSegment.from_file(input_path)
             original_duration = len(audio) / 1000.0
-            
+
             # Jimlik bo'lmagan birinchi va oxirgi nuqtalarni topish
             nonsilent_ranges = detect_nonsilent(
                 audio,
                 min_silence_len=100,
                 silence_thresh=silence_threshold
             )
-            
+
             if not nonsilent_ranges:
                 logger.warning("⚠️ Hech qanday ovoz topilmadi!")
                 return input_path
-            
+
             # Birinchi va oxirgi ovozli joylarni olish
             start = nonsilent_ranges[0][0]
             end = nonsilent_ranges[-1][1]
-            
+
             # Kesish
             trimmed_audio = audio[start:end]
-            
+
             # Statistika
             final_duration = len(trimmed_audio) / 1000.0
             removed = original_duration - final_duration
-            
+
             # Saqlash
             filename = Path(input_path).stem
             output_filename = f"{filename}_trimmed.wav"
             output_path = os.path.join(self.output_dir, output_filename)
-            
+
             trimmed_audio.export(output_path, format="wav")
-            
+
             logger.info(f"✅ Bosh va oxir kesildi:")
             logger.info(f"   - Original: {original_duration:.2f}s")
             logger.info(f"   - Yangi: {final_duration:.2f}s")
             logger.info(f"   - Olib tashlangan: {removed:.2f}s")
-            
+
             return output_path
-            
+
         except Exception as e:
             logger.error(f"❌ Kesishda xato: {e}")
             raise
-    
+
     def adaptive_silence_removal(
         self,
         input_path: str,
@@ -233,20 +227,20 @@ class SilenceRemover:
     ) -> str:
         """
         Adaptiv jimlik olib tashlash (audio tabiati bo'yicha moslashadi)
-        
+
         Args:
             input_path: Kirish audio fayl yo'li
             aggressiveness: Agressivlik darajasi
                           "gentle" = kam olib tashlash
                           "moderate" = o'rtacha
                           "aggressive" = ko'p olib tashlash
-        
+
         Returns:
             Qayta ishlangan audio fayl yo'li
         """
         try:
             logger.info(f"🎯 Adaptiv jimlik olib tashlash: {aggressiveness}")
-            
+
             # Parametrlarni tanlash
             params = {
                 "gentle": {
@@ -265,9 +259,9 @@ class SilenceRemover:
                     "keep_silence": 50
                 }
             }
-            
+
             p = params.get(aggressiveness, params["moderate"])
-            
+
             # Jimlikni olib tashlash
             output_path = self.remove_silence(
                 input_path,
@@ -275,9 +269,9 @@ class SilenceRemover:
                 min_silence_duration=p["min_silence"],
                 keep_silence=p["keep_silence"]
             )
-            
+
             return output_path
-            
+
         except Exception as e:
             logger.error(f"❌ Adaptiv jimlik olib tashlashda xato: {e}")
             raise

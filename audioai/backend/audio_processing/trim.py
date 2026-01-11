@@ -78,7 +78,7 @@ class SilenceTrimmer:
         sample_rate: int = 16000,
         silence_threshold_db: float = -40,
         min_silence_duration: float = 0.3,
-        max_silence_duration: float = 0.5,
+        max_silence_duration: float = 0.4,
         frame_length: int = 2048,
         hop_length: int = 512
     ):

@@ -1,10 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AudioAI - STT Dataset Verification">
+    <title>Audio Verification - AudioAI</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/verify.css">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+
+<!--    <style>-->
+<!--        -->
+<!--    </style>-->
 </head>
 <body>
-$END$
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-waveform-lines"></i></div>
+                <span class="logo-text">AudioAI</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Bosh sahifa</a>
+                <a href="editor.html" class="nav-link">Preprocessing</a>
+                <a href="verify.html" class="nav-link active">Verification</a>
+                <a href="recorder.html" class="nav-link">Yozish</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="verify-page">
+        <div class="container verify-container">
+
+            <!-- Header -->
+            <div class="verify-header">
+                <h1>🔍 Audio-Text Verification</h1>
+                <p>Audio va text fayllarni nom bo'yicha moslashtiring va STT dataset sifatini tekshiring</p>
+            </div>
+
+            <!-- Input Section -->
+            <section class="verify-card" id="inputSection">
+
+                <!-- Step 1: Upload Files -->
+                <div class="card-section">
+                    <div class="section-title">
+                        <span class="step-number">1</span>
+                        Fayllarni yuklang
+                    </div>
+                    <p class="section-hint">
+                        Text va audio fayllarni alohida yuklang. Ular <strong>nom bo'yicha</strong> avtomatik moslashtiriladi.
+                        <br>Masalan: <code>audio_001.txt</code> ↔ <code>audio_001.wav</code>
+                    </p>
+
+                    <div class="upload-grid">
+                        <!-- Text Files -->
+                        <div class="upload-column">
+                            <div class="upload-column-title">
+                                <i class="fas fa-file-lines" style="color: #f59e0b;"></i>
+                                Text fayllar (.txt)
+                                <span class="file-count" id="textCount">0</span>
+                            </div>
+                            <div class="upload-zone text-zone" id="textUploadZone">
+                                <input type="file" id="textInput" accept=".txt" multiple>
+                                <div class="upload-icon"><i class="fas fa-file-lines"></i></div>
+                                <h4>Text fayllarni yuklang</h4>
+                                <p>Birinchi .txt fayllarni tanlang</p>
+                            </div>
+                            <div class="file-list" id="textFileList"></div>
+                        </div>
+
+                        <!-- Audio Files -->
+                        <div class="upload-column">
+                            <div class="upload-column-title">
+                                <i class="fas fa-file-audio" style="color: var(--primary);"></i>
+                                Audio fayllar
+                                <span class="file-count" id="audioCount">0</span>
+                            </div>
+                            <div class="upload-zone audio-zone" id="audioUploadZone">
+                                <input type="file" id="audioInput" accept=".wav,.mp3,.ogg,.flac,.m4a" multiple>
+                                <div class="upload-icon"><i class="fas fa-file-audio"></i></div>
+                                <h4>Audio fayllarni yuklang</h4>
+                                <p>WAV, MP3, OGG, FLAC, M4A</p>
+                            </div>
+                            <div class="file-list" id="audioFileList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Match Preview -->
+                    <div class="match-section" id="matchSection" style="display: none;">
+                        <div class="match-title">
+                            <h4><i class="fas fa-link"></i> Moslashtirilgan fayllar</h4>
+                            <div class="match-stats">
+                                <span class="match-stat matched"><i class="fas fa-check-circle"></i> <span id="matchedCount">0</span> mos</span>
+                                <span class="match-stat unmatched"><i class="fas fa-exclamation-circle"></i> <span id="unmatchedCount">0</span> moslanmagan</span>
+                            </div>
+                        </div>
+                        <div class="match-list" id="matchList"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Options -->
+                <div class="card-section">
+                    <div class="section-title">
+                        <span class="step-number">2</span>
+                        Sozlamalar
+                    </div>
+                    <div class="options-grid">
+                        <div class="option-card">
+                            <div class="option-info"><i class="fas fa-microchip"></i><span>Whisper Model</span></div>
+                            <select class="model-select" id="whisperModel">
+                                <option value="tiny">Tiny</option>
+                                <option value="base" selected>Base</option>
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large-v2">Large-v2</option>
+                            </select>
+                        </div>
+                        <div class="option-card">
+                            <div class="option-info"><i class="fas fa-globe"></i><span>Til</span></div>
+                            <select class="model-select" id="language">
+                                <option value="auto">Avtomatik</option>
+                                <option value="uz">O'zbekcha</option>
+                                <option value="ru">Ruscha</option>
+                                <option value="en">Inglizcha</option>
+                            </select>
+                        </div>
+                        <div class="option-card">
+                            <div class="option-info"><i class="fas fa-wand-magic-sparkles"></i><span>Preprocessing</span></div>
+                            <label class="toggle-switch"><input type="checkbox" id="optPreprocess" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="option-card">
+                            <div class="option-info"><i class="fas fa-scissors"></i><span>Silence Trim</span></div>
+                            <label class="toggle-switch"><input type="checkbox" id="optTrimSilence" checked><span class="toggle-slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Button -->
+                <div class="start-section">
+                    <button class="btn btn-secondary btn-clear" id="clearBtn"><i class="fas fa-trash"></i> Tozalash</button>
+                    <button class="btn btn-primary btn-start" id="startBtn" disabled><i class="fas fa-play"></i> Verification boshlash</button>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section" id="progressSection">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-title"><i class="fas fa-spinner fa-spin"></i> Processing...</div>
+                        <div class="progress-stats">
+                            <span><span id="completedCount">0</span> / <span id="totalCount">0</span> tayyor</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill processing" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-status" id="progressStatus">Boshlanmoqda...</div>
+                    <div class="task-list" id="taskList"></div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection">
+                <div class="summary-grid">
+                    <div class="summary-card"><div class="summary-value" id="summaryTotal">0</div><div class="summary-label">Jami</div></div>
+                    <div class="summary-card valid"><div class="summary-value" id="summaryValid">0</div><div class="summary-label">✅ Valid (≥90%)</div></div>
+                    <div class="summary-card warning"><div class="summary-value" id="summaryWarning">0</div><div class="summary-label">⚠️ Warning</div></div>
+                    <div class="summary-card reject"><div class="summary-value" id="summaryReject">0</div><div class="summary-label">❌ Reject</div></div>
+                    <div class="summary-card"><div class="summary-value" id="summaryAvg">0%</div><div class="summary-label">O'rtacha</div></div>
+                </div>
+
+                <div class="results-table-container">
+                    <div class="results-header">
+                        <div class="results-title"><i class="fas fa-list-check"></i> Natijalar</div>
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all">Hammasi</button>
+                            <button class="filter-tab" data-filter="valid">Valid</button>
+                            <button class="filter-tab" data-filter="warning">Warning</button>
+                            <button class="filter-tab" data-filter="reject">Reject</button>
+                        </div>
+                    </div>
+                    <div class="results-table-wrapper">
+                        <table class="results-table">
+                            <thead><tr><th>Fayl</th><th>Moslik</th><th>Status</th><th>Transcription</th><th></th></tr></thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="new-job-section">
+                    <button class="btn btn-secondary" id="newJobBtn"><i class="fas fa-plus"></i> Yangi verification</button>
+                    <button class="btn btn-primary" id="downloadResultsBtn"><i class="fas fa-download"></i> CSV yuklab olish</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-content">
+            <div class="detail-header">
+                <h3>Audio Details</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="detail-body">
+                <div class="detail-section"><div class="detail-label">Fayl nomi</div><div class="detail-value" id="modalFileName">-</div></div>
+                <div class="detail-section"><div class="detail-label">Moslik</div><div class="detail-value" id="modalSimilarity">-</div></div>
+                <div class="detail-section"><div class="detail-label">Transcription (Whisper)</div><div class="detail-value" id="modalTranscription">-</div></div>
+                <div class="detail-section"><div class="detail-label">Reference matn</div><div class="detail-value" id="modalReference">-</div></div>
+                <div class="detail-section"><div class="detail-label">Yo'qolgan so'zlar</div><div class="detail-value" id="modalMissing">-</div></div>
+                <div class="detail-section"><div class="detail-label">Ortiqcha so'zlar</div><div class="detail-value" id="modalExtra">-</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/verify.js"></script>
 </body>
 </html>

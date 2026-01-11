@@ -33,9 +33,9 @@ class AudioDenoiser:
     
     def __init__(
         self, 
-        sample_rate: int = 16000,
-        noise_reduce_strength: float = 0.7,
-        highpass_freq: int = 80
+        sample_rate: int = 16000, # 24000  TTS uchun ham yaxshi Hz hisoblaanadi. 24-44 Hz gacha
+        noise_reduce_strength: float = 0.6,
+        highpass_freq: int = 80 # 80
     ):
         """
         AudioDenoiser ni ishga tushirish.

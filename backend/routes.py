@@ -14,6 +14,10 @@ from segmentation import AudioSegmenter
 from silence_remover import SilenceRemover
 from utils.audio_utils import save_upload_file, generate_unique_filename
 
+"""
+API Routes - Barcha audio processing endpoint'lari
+"""
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -117,8 +121,8 @@ async def upload_multiple_audio(files: List[UploadFile] = File(...)):
 
 @router.post("/process/noise-reduction")
 async def reduce_noise(
-    file_id: str = Form(...),
-    noise_reduction_strength: float = Form(0.8)
+        file_id: str = Form(...),
+        noise_reduction_strength: float = Form(0.8)
 ):
     """
     Audio'dan shovqinni tozalash
@@ -159,9 +163,9 @@ async def reduce_noise(
 
 @router.post("/process/segmentation")
 async def segment_audio(
-    file_id: str = Form(...),
-    segment_duration: int = Form(30),
-    overlap: int = Form(0)
+        file_id: str = Form(...),
+        segment_duration: int = Form(30),
+        overlap: int = Form(0)
 ):
     """
     Audio'ni bo'laklarga bo'lish
@@ -204,9 +208,9 @@ async def segment_audio(
 
 @router.post("/process/remove-silence")
 async def remove_silence(
-    file_id: str = Form(...),
-    silence_threshold: int = Form(-40),
-    min_silence_duration: int = Form(500)
+        file_id: str = Form(...),
+        silence_threshold: int = Form(-40),
+        min_silence_duration: int = Form(500)
 ):
     """
     Audio'dan jimlik (silence) joylarni olib tashlash
@@ -226,20 +230,7 @@ async def remove_silence(
             logger.error(f"Fayl topilmadi: {input_path}")
             raise HTTPException(status_code=404, detail=f"Fayl topilmadi: {file_id}")
 
-        # Jimlikni olib tashlash
-        output_path = silence_remover.remove_silence(
-            input_path,
-            silence_threshold=silence_threshold,
-            min_silence_duration=min_silence_duration
-        )
 
-        logger.info(f"✅ Jimlik olib tashlandi: {file_id}")
-
-        return FileResponse(
-            output_path,
-            media_type="audio/wav",
-            filename=f"no_silence_{file_id}"
-        )
 
     except Exception as e:
         logger.error(f"❌ Jimlik olib tashlashda xato: {e}")
@@ -248,8 +239,8 @@ async def remove_silence(
 
 @router.post("/process/complete")
 async def complete_processing(
-    file_id: str = Form(...),
-    operations: str = Form(...)
+        file_id: str = Form(...),
+        operations: str = Form(...)
 ):
     """
     Bir nechta operatsiyalarni ketma-ket bajarish
@@ -325,8 +316,8 @@ async def complete_processing(
 
 @router.post("/process/batch")
 async def batch_process(
-    file_ids: str = Form(...),
-    operations: str = Form(...)
+        file_ids: str = Form(...),
+        operations: str = Form(...)
 ):
     """
     Ko'plab fayllarni bir vaqtda qayta ishlash (Batch Processing)

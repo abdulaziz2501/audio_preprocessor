@@ -6,7 +6,7 @@
 const AudioHandler = {
     // API base URL
     API_URL: 'http://localhost:8000/api/v1',
-    
+
     // Hozirgi fayllar ro'yxati
     uploadedFiles: [],
 
